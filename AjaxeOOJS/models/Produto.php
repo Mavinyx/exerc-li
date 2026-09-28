@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 
-class Produto {
+class Produto implements JsonSerializable{
     private $id;
     private $nome;
     private $preco;
@@ -92,5 +92,14 @@ class Produto {
             return new Produto($dados['nome'], $dados['preco'], $dados['estoque'], (int)$dados['id']);
         }
         return null;
+    }
+    
+    public function jsonSerialize(): array {
+        return [
+            'id' => $this->id,
+            'nome' => $this->nome,
+            'preco' => $this->preco,
+            'estoque' => $this->estoque
+        ];
     }
 }

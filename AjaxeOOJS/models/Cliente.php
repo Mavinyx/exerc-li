@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 
-class Cliente {
+class Cliente implements JsonSerializable {
     private $id;
     private $nome;
     private $telefone;
@@ -78,5 +78,14 @@ class Cliente {
             return new Cliente($dados['nome'], $dados['telefone'], (int)$dados['id']);
         }
         return null;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'id' => $this->id,
+            'nome' => $this->nome,
+            'telefone' => $this->telefone,
+     
+        ];
     }
 }

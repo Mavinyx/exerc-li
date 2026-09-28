@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/Produto.php';
 
-class Venda {
+class Venda implements JsonSerializable{
     private $id;
     private $clienteId;
     private $produtoId;
@@ -130,5 +130,17 @@ class Venda {
             );
         }
         return null;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id'=> $this->id,
+            'clienteId'=>$this->clienteId,
+            'produtoId'=>$this->produtoId,
+            'quantidade'=>$this->quantidade,
+            'valorTotal'=>$this->valorTotal,
+            'dataVenda'=>$this->dataVenda
+        ];
     }
 }

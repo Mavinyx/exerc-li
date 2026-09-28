@@ -37,4 +37,15 @@ class ProdutoController {
         $produtos = Produto::todos();
         require __DIR__ . '/../views/produtos.php';
     }
+    public function listarApi(){
+        header('Content-Type: application/json;charset= utf-8');
+        try{
+            $produtos = Produto::todos();
+            echo json_encode($produtos);
+        }catch(Exception $e){
+            http_response_code(500);
+            echo json_encode(['erro' => $e->getMessage()]);
+        }
+        exit;
+    }
 }

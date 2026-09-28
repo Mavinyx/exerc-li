@@ -54,4 +54,15 @@ class VendaController {
 
         require __DIR__ . '/../views/vendas.php';
     }
+    public function listarApi(){
+        header('Content-Type: application/json;charset= utf-8');
+        try{
+            $vendas = Venda::todos();
+            echo json_encode($vendas);
+        }catch(Exception $e){
+            http_response_code(500);
+            echo json_encode(['erro' => $e->getMessage()]);
+        }
+        exit;
+    }
 }
