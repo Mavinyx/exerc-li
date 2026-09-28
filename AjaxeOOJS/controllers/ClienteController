@@ -1,0 +1,36 @@
+<?php
+require_once __DIR__ . '/../models/Cliente.php';
+
+class ClienteController {
+    public function index() {
+        $mensagem = null;
+        $erro = null;
+
+        if (isset($_GET['acao']) && $_GET['acao'] === 'deletar' && !empty($_GET['id'])) {
+            try {
+                $cliente = Cliente::buscarPorId($_GET['id']);
+                if ($cliente) {
+                    $cliente->deletar();
+                    $mensagem = "Cliente excluído com sucesso!";
+                } else {
+                    $erro = "Cliente não encontrado.";
+                }
+            } catch (Exception $e) {
+                $erro = $e->getMessage();
+            }
+        }
+
+        if ($_POST) {
+            try {
+                $cliente = new Cliente($_POST['nome'] ?? null, $_POST['telefone'] ?? null);
+                $cliente->salvar();
+                $mensagem = "Cliente cadastrado com sucesso!";
+            } catch (Exception $e) {
+                $erro = $e->getMessage();
+            }
+        }
+
+        $clientes = Cliente::todos();
+        require __DIR__ . '/../views/clientes.php';
+    }
+}

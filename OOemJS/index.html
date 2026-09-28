@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crie a representação do Objeto usuário do sistema de vocês em JS</title>
+</head>
+<body>
+    Cadastro: <span id="nome_cadastrado"></span>
+    <form onsubmit="criaUser(event)">
+        <input id="nome" type="text" placeholder="nome"></input>
+        <input id="senha" type="text" placeholder="senha"></input>
+        <input id="data" type="date" placeholder="data"></input>
+        <button type="submit">enviar</button>
+    </form>
+    <button onclick="CalcTempCad()">verifique seu tempo cadastrado</button>
+    <script>
+        let userAt = null;
+
+        function Usuario(nome, senha, dta_nsc){
+            //validação senha
+                if (!/[a-z]/.test(senha) || !/[A-Z]/.test(senha)) {
+                    console.log('senha invalida');
+                    return null;
+                }
+                console.log('senha valida');
+
+            //validação data de nascimento
+                if(!dta_nsc || dta_nsc > new Date()){
+                    return null;
+                }
+                console.log('data valida');
+                this.nome = nome;
+                this.senha = senha;
+                this.dta_nsc = dta_nsc;
+                this.data_cad = Date.now();
+            //calculo da idade
+                this.CalcIdade = function (){
+                    const agora = new Date();
+                    let idade = agora.getFullYear() - this.dta_nsc.getFullYear();
+                    const m = agora.getMonth() - this.dta_nsc.getMonth();
+                    if (m < 0 || (m === 0 && agora.getDate() < this.dta_nsc.getDate())) {
+                        idade--;
+                    }
+                    return idade;
+                }
+            //calculo do tempo de cadastro
+                this.CalcCad = function (){
+                    console.log(this.data_cad);
+                    const diffCad =  Date.now() - this.data_cad;
+                    console.log(diffCad);
+                    const seg = Math.floor(diffCad / 1000);
+                    const min = Math.floor(seg /60);
+                    alert(min>0 ? `cadastrado há ${min} minutos e ${seg % 60} segundos` : ` cadastrado há ${seg} segundos`);
+                    return;
+                }
+                
+    
+        }
+        function criaUser(event){ 
+            event.preventDefault();
+            const nome = document.getElementById("nome").value;
+            const senha = document.getElementById("senha").value;
+            const data = document.getElementById("data").value;
+            let user = new Usuario(
+                nome,
+                senha,
+                new Date(data)
+                );
+            if(user && user.nome){
+                userAt = user;
+                document.getElementById("nome_cadastrado").innerHTML = `${userAt.nome} (Idade: ${userAt.CalcIdade()} anos)`;
+            }
+            console.log(user);
+        }
+
+        function CalcTempCad(event){
+            if(userAt == null){
+                alert("não está cadastrado");
+                return;
+            }else{
+              userAt.CalcCad();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<?php
+require_once __DIR__ . '/../models/Venda.php';
+require_once __DIR__ . '/../models/Cliente.php';
+require_once __DIR__ . '/../models/Produto.php';
+
+class VendaController {
+    public function index() {
+        $mensagem = null;
+        $erro = null;
+
+        if (isset($_GET['acao']) && $_GET['acao'] === 'deletar' && !empty($_GET['id'])) {
+            try {
+                $venda = Venda::buscarPorId($_GET['id']);
+                if ($venda) {
+                    $venda->deletar();
+                    $mensagem = "Venda cancelada e estoque estornado com sucesso!";
+                } else {
+                    $erro = "Venda não encontrada.";
+                }
+            } catch (Exception $e) {
+                $erro = $e->getMessage();
+            }
+        }
+
+        
+        if ($_POST) {
+            try {
+                $venda = new Venda(
+                    $_POST['cliente_id'] ?? null,
+                    $_POST['produto_id'] ?? null,
+                    $_POST['quantidade'] ?? null
+                );
+                $venda->registrar();
+                $mensagem = "Venda #" . $venda->getId() . " registrada com sucesso! Total: R$ " . number_format($venda->getValorTotal(), 2, ',', '.');
+            } catch (Exception $e) {
+                $erro = $e->getMessage();
+            }
+        }
+
+        $clientes = Cliente::todos();
+        $produtos = Produto::todos();
+        $vendas = Venda::todos();
+
+      
+        $mapaClientes = [];
+        foreach ($clientes as $c) {
+            $mapaClientes[$c->getId()] = $c->getNome();
+        }
+
+        $mapaProdutos = [];
+        foreach ($produtos as $p) {
+            $mapaProdutos[$p->getId()] = $p->getNome();
+        }
+
+        require __DIR__ . '/../views/vendas.php';
+    }
+}

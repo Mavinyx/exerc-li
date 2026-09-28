@@ -1,0 +1,40 @@
+<?php
+require_once __DIR__ . '/../models/Produto.php';
+
+class ProdutoController {
+    public function index() {
+        $mensagem = null;
+        $erro = null;
+
+        if (isset($_GET['acao']) && $_GET['acao'] === 'deletar' && !empty($_GET['id'])) {
+            try {
+                $produto = Produto::buscarPorId($_GET['id']);
+                if ($produto) {
+                    $produto->deletar();
+                    $mensagem = "Produto excluído com sucesso!";
+                } else {
+                    $erro = "Produto não encontrado.";
+                }
+            } catch (Exception $e) {
+                $erro = $e->getMessage();
+            }
+        }
+
+        if ($_POST) {
+            try {
+                $produto = new Produto(
+                    $_POST['nome'] ?? null,
+                    $_POST['preco'] ?? null,
+                    $_POST['estoque'] ?? null
+                );
+                $produto->salvar();
+                $mensagem = "Produto cadastrado com sucesso!";
+            } catch (Exception $e) {
+                $erro = $e->getMessage();
+            }
+        }
+
+        $produtos = Produto::todos();
+        require __DIR__ . '/../views/produtos.php';
+    }
+}
