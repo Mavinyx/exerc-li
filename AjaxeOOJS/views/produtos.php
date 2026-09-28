@@ -55,5 +55,22 @@
             <?php endif; ?>
         </tbody>
     </table>
+    <script>
+        fetch('index.php?rota=api_produtos')
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error('Erro na resposta do server: ' + response.status); 
+                }
+                return response.json();
+                })
+            .then(dadosProdutos => {
+                dadosProdutos.forEach(produto => {
+                console.log(`ID: ${produto.id} - ${produto.nome} (R$ ${produto.preco})`);
+            });
+            })
+            .catch(erro => {
+            console.error('Erro ao buscar produtos:', erro);
+        });
+    </script>
 </body>
 </html>
