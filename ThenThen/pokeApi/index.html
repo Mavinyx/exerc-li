@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poke Api</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: rgb(164, 184, 156);}
+        .card { border: 1px solid #ccc; padding: 15px; border-radius: 8px; width: 220px; text-align: center; }
+        .card img { width: 120px; height: 120px; }
+    </style>
+</head>
+<body>
+    <h1>testando conexão com PokeApi ...</h1>
+    <label for="poke_busca">Insira o nome do pokemon que deseja procurar</label><input id='poke_busca' type="text" placeholder="ex: pikachu">
+    <button onclick="buscarPokemon()">Buscar</button>
+    <span id="result"></span>
+    <script>
+        const res = document.getElementById('result');
+        function buscarPokemon(){
+            const pokeBusca = document.getElementById('poke_busca').value.toLowerCase().trim();
+            if(!pokeBusca){
+                res.innerHTML = 'Digite o nome do Pokemon';
+                return;
+            }
+            fetch(`https://pokeapi.co/api/v2/pokemon/${pokeBusca}`)
+                .then(res => {
+                    if(!res.ok) throw new Error('Erro ao buscar o pokemon');
+                    return res.json();
+                })
+                .then(poke =>{
+                    const tipos = poke.types.map(t => t.type.name).join(', ');
+                    res.innerHTML = ` <div class="card">
+                            <h3>#${poke.id} - ${poke.name.toUpperCase()}</h3>
+                            <img src="${poke.sprites.front_default}" alt="${poke.name}">
+                            <p><strong>Tipo:</strong> ${tipos}</p>
+                            <p><strong>Altura:</strong> ${poke.height / 10} m</p>
+                            <p><strong>Peso:</strong> ${poke.weight / 10} kg</p>
+                        </div>
+                    `;
+                })
+                .catch(erro =>{
+                    res.innerHTML = `${erro.message}`;
+                });
+        }
+    </script>
+</body>
+</html>
