@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dummy Api</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: rgb(164, 184, 156);}
+        .card { border: 1px solid #ccc; padding: 10px; margin-bottom: 8px; border-radius: 4px; }
+        button { padding: 8px 12px; margin-right: 5px; width: 10%; cursor: pointer; background-color: rgb(213, 210, 223); }
+    </style>
+</head>
+<body>
+    <h1>testando conexão com dummy ...</h1>
+    <button id="btn-get" onclick="listarProdutos()">Listar</button>
+    <h3>Resultado:</h3>
+    <span id="lista_produtos"></span>
+    <script>
+        /*
+        fetch('https://dummyjson.com/test')
+        .then(res => 
+        if(!res.ok) throw new Error('Erro na requisição!') ;
+        return res.json()
+        )
+        .then(console.log);
+        */
+        function listarProdutos(){
+            fetch('https://dummyjson.com/products?limit=5')
+                .then(res => {
+                    if (!res.ok) throw new Error('Status HTTP: ' + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    data.products.forEach(p => {
+                        document.getElementById('lista_produtos').innerHTML += `
+                            <div class="card">
+                                <strong>#${p.id} - ${p.title}</strong><br>
+                                Preço: $${p.price} | Marca: ${p.brand}
+                            </div>
+                        `;
+                    });
+                })
+                .catch(erro =>{
+                    console.error('Erro:', erro);
+                });
+        }
+    </script>
+</body>
+</html>
